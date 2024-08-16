@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDb_Api.DbEngine;
+﻿using MongoDb_Api.DbEngine;
 using MongoDb_Api.Models.QuickChatModels;
 
 namespace MongoDb_Api.Repositories.QuickChatRepo
@@ -7,6 +6,7 @@ namespace MongoDb_Api.Repositories.QuickChatRepo
     public interface IRegistrationRepo
     {
         Task<String> CreateUserAccount(UserProfile userProfile);
+        Task<List<UserProfile>> GetAllUserDetails();
     }
     public class RegistrationRepo(IMongoCloudEngine cloudEngine) : IRegistrationRepo
     {
@@ -25,6 +25,21 @@ namespace MongoDb_Api.Repositories.QuickChatRepo
             }
             
             return id;
+        }
+
+        public async Task<List<UserProfile>> GetAllUserDetails()
+        {
+            List<UserProfile> userProfiles = new();
+            try
+            {
+               userProfiles = await _cloudEngine.GetAllDocumentsAsync<UserProfile>(userCollection);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
+            return userProfiles;
         }
     }
 }

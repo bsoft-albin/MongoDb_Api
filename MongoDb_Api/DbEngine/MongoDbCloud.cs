@@ -119,5 +119,18 @@ namespace MongoDb_Api.DbEngine
             }
             
         }
+
+        public async Task<X> GetFilterDocumentAsync<X>(string collectionName, FilterDefinition<X> filter) where X : new()
+        {
+            try
+            {
+                var collection = _mongoDatabase.GetCollection<X>(collectionName);
+                return await collection.Find(filter).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                return new();
+            }
+        }
     }
 }

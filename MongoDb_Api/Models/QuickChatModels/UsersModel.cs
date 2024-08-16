@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using System.ComponentModel.DataAnnotations;
 
 namespace MongoDb_Api.Models.QuickChatModels
 {
@@ -40,5 +41,14 @@ namespace MongoDb_Api.Models.QuickChatModels
         public string DeviceToken { get; set; } = "";
         [BsonElement("socialLinks")]
         public string SocialLinks { get; set; } = "";
+    }
+
+    public class UserObject {
+        [Required]
+        [MaxLength(50)]
+        public string UserName { get; set; } = "";
+        [Required]
+        [MaxLength(50)]
+        public string Password { get; set; } = "";
     }
 }

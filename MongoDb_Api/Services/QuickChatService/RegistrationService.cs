@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+﻿using MongoDB.Driver;
 using MongoDb_Api.Models.QuickChatModels;
 using MongoDb_Api.Repositories.QuickChatRepo;
 
@@ -8,6 +8,7 @@ namespace MongoDb_Api.Services.QuickChatService
     public interface IRegistrationService
     {
         Task<BaseResponse> CreateUserAccount(UserProfile userProfile);
+        Task<BaseResponse> GetUserDetails(UserObject userObject);
     }
 
     public class RegistrationService(IRegistrationRepo repo) : IRegistrationService
@@ -30,6 +31,11 @@ namespace MongoDb_Api.Services.QuickChatService
             }
 
             return baseResponse;
+        }
+
+        public Task<BaseResponse> GetUserDetails(UserObject userObject)
+        {
+            throw new NotImplementedException();
         }
     }
 
