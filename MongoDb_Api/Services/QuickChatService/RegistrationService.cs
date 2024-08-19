@@ -1,5 +1,4 @@
-﻿using MongoDB.Driver;
-using MongoDb_Api.Models.QuickChatModels;
+﻿using MongoDb_Api.Models.QuickChatModels;
 using MongoDb_Api.Repositories.QuickChatRepo;
 
 namespace MongoDb_Api.Services.QuickChatService
@@ -33,9 +32,24 @@ namespace MongoDb_Api.Services.QuickChatService
             return baseResponse;
         }
 
-        public Task<BaseResponse> GetUserDetails(UserObject userObject)
+        public async Task<BaseResponse> GetUserDetails(UserObject userObject)
         {
-            throw new NotImplementedException();
+            BaseResponse baseResponse = new();
+
+            UserProfile userProfile = await _repo.GetUserDetails(userObject);
+
+            if (userProfile != null) {
+                baseResponse.StatusMessage = "User Found";
+                baseResponse.StatusCode = 200;
+                baseResponse.Data = userProfile;
+            }
+            else
+            {
+                baseResponse.StatusMessage = "User not Found";
+                baseResponse.StatusCode = 204;
+            }
+
+            return baseResponse;
         }
     }
 

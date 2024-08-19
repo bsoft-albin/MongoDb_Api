@@ -1,10 +1,11 @@
 using MongoDb_Api.DbEngine;
+using MongoDb_Api.Frameworks.CommonMeths;
 using MongoDb_Api.Repositories;
 using MongoDb_Api.Repositories.QuickChatRepo;
 using MongoDb_Api.Services;
 using MongoDb_Api.Services.QuickChatService;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddTransient<IMongoSampleRepo, MongoSampleRepo>();
@@ -42,7 +43,10 @@ builder.Services.AddCors(options =>
                       });
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
+
+// Initialize LogHelper with hosting environment
+ErrorLogger.Initialize(app.Services.GetRequiredService<IHostEnvironment>());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -54,14 +58,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
-// Add CSP header
-app.Use(async (context, next) =>
-{
-    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; connect-src 'self' https://localhost:44367");
-    await next();
-});
-
 
 app.UseCors("AllowAllOrigins");
 

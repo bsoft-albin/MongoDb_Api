@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Frameworks\CommonMeths\" />
     <Folder Include="Frameworks\CommonProps\" />
+    <Folder Include="ErrorLogsDirectory\" />
   </ItemGroup>
 
 </Project>

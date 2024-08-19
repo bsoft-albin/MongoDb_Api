@@ -1,4 +1,6 @@
-﻿using MongoDb_Api.DbEngine;
+﻿using MongoDB.Driver;
+using MongoDb_Api.DbEngine;
+using MongoDb_Api.Frameworks.CommonMeths;
 using MongoDb_Api.Models.QuickChatModels;
 
 namespace MongoDb_Api.Repositories.QuickChatRepo
@@ -6,7 +8,7 @@ namespace MongoDb_Api.Repositories.QuickChatRepo
     public interface IRegistrationRepo
     {
         Task<String> CreateUserAccount(UserProfile userProfile);
-        Task<List<UserProfile>> GetAllUserDetails();
+        Task<UserProfile> GetUserDetails(UserObject userObject);
     }
     public class RegistrationRepo(IMongoCloudEngine cloudEngine) : IRegistrationRepo
     {
@@ -21,25 +23,30 @@ namespace MongoDb_Api.Repositories.QuickChatRepo
             }
             catch (Exception ex)
             {
-
+                await ErrorLogger.WriteLog(ex);
             }
             
             return id;
         }
 
-        public async Task<List<UserProfile>> GetAllUserDetails()
+        public async Task<UserProfile> GetUserDetails(UserObject userObject)
         {
-            List<UserProfile> userProfiles = new();
+            UserProfile user = new();
+            // Create the filter for username and password
+            FilterDefinition<UserProfile> filter = Builders<UserProfile>.Filter.And(
+                Builders<UserProfile>.Filter.Eq(u => u.UserName, userObject.UserName),
+                Builders<UserProfile>.Filter.Eq(u => u.Password, userObject.Password)
+            );
             try
             {
-               userProfiles = await _cloudEngine.GetAllDocumentsAsync<UserProfile>(userCollection);
+                user = await _cloudEngine.GetFilterDocumentAsync(userCollection, filter);
             }
             catch (Exception ex)
             {
-
+                await ErrorLogger.WriteLog(ex);
             }
             
-            return userProfiles;
+            return user;
         }
     }
 }

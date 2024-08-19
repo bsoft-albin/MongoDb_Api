@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDb_Api.Frameworks.CommonMeths;
 
 namespace MongoDb_Api.DbEngine
 {
@@ -9,7 +10,9 @@ namespace MongoDb_Api.DbEngine
         Task<T> GetDocumentByIdAsync<T>(string collectionName, string id);
         Task<UpdateResult> UpdateDocumentByIdAsync<T>(string collectionName, string id, T document);
         Task<DeleteResult> DeleteDocumentByIdAsync<T>(string collectionName, string id);
-        Task<List<X>> GetAllDocumentsAsync<X>(string collectionName);
+        Task<IMongoCollection<X>> GetAllDocumentsAsync<X>(string collectionName);
+        Task<List<X>> GetAllDocumentsAsListAsync<X>(string collectionName);
+        Task<X> GetFilterDocumentAsync<X>(string collectionName, FilterDefinition<X> filter);
     }
 
     public class MongoCloudEngine : IMongoCloudEngine
@@ -18,7 +21,7 @@ namespace MongoDb_Api.DbEngine
 
         public MongoCloudEngine(string ConString, string DbName)
         {
-            var client = new MongoClient(ConString);
+            MongoClient client = new(ConString);
             _mongoDatabase = client.GetDatabase(DbName);
         }
 
@@ -38,7 +41,7 @@ namespace MongoDb_Api.DbEngine
             }
             catch (Exception ex)
             {
-
+                await ErrorLogger.WriteLog(ex);
                 throw;
             }
         }
@@ -46,48 +49,59 @@ namespace MongoDb_Api.DbEngine
         public async Task<DeleteResult> DeleteDocumentByIdAsync<T>(string collectionName, string id)
         {
             IMongoCollection<T> collection;
-            DeleteResult delresult;
             try
             {
                 collection = _mongoDatabase.GetCollection<T>(collectionName);
                 FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
-                delresult = await collection.DeleteOneAsync(filter);
+                return await collection.DeleteOneAsync(filter);
             }
             catch (Exception ex)
             {
-
+                await ErrorLogger.WriteLog(ex);
                 throw;
             }
-            
-            return delresult;
         }
 
-        public async Task<List<X>> GetAllDocumentsAsync<X>(string collectionName)
+        public async Task<IMongoCollection<X>> GetAllDocumentsAsync<X>(string collectionName)
         {
             try
             {
-                var collection = _mongoDatabase.GetCollection<X>(collectionName);
-                return await collection.Find(_ => true).ToListAsync();
+                return _mongoDatabase.GetCollection<X>(collectionName);
             }
             catch (Exception ex)
             {
-
+                await ErrorLogger.WriteLog(ex);
                 throw;
             }
             
+        }
+
+        public async Task<List<X>> GetAllDocumentsAsListAsync<X>(string collectionName)
+        {
+            try
+            {
+                IMongoCollection<X> mongoCollection = _mongoDatabase.GetCollection<X>(collectionName);
+                return await mongoCollection.Find(_ => true).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                await ErrorLogger.WriteLog(ex);
+                throw;
+            }
+
         }
 
         public async Task<T> GetDocumentByIdAsync<T>(string collectionName, string id)
         {
             try
             {
-                var collection = _mongoDatabase.GetCollection<T>(collectionName);
-                var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
+                IMongoCollection<T> collection = _mongoDatabase.GetCollection<T>(collectionName);
+                FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
                 return await collection.Find(filter).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
-
+                await ErrorLogger.WriteLog(ex);
                 throw;
             }
             
@@ -97,39 +111,42 @@ namespace MongoDb_Api.DbEngine
         {
             try
             {
-                var collection = _mongoDatabase.GetCollection<T>(collectionName);
-                var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
+                IMongoCollection<T> collection = _mongoDatabase.GetCollection<T>(collectionName);
+                FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
 
                 // Convert the document to BsonDocument to manipulate its fields
-                var bsonDocument = document.ToBsonDocument();
+                BsonDocument bsonDocument = document.ToBsonDocument();
 
                 // Remove the _id field to prevent modification of the immutable _id
                 bsonDocument.Remove("_id");
 
                 // Define the update operation using $set
-                var updateDefinition = new BsonDocument("$set", bsonDocument);
+                BsonDocument updateDefinition = new BsonDocument("$set", bsonDocument);
 
                 // Perform the update
                 return await collection.UpdateOneAsync(filter, updateDefinition);
             }
             catch (Exception ex)
             {
-
+                await ErrorLogger.WriteLog(ex);
                 throw;
             }
             
         }
 
-        public async Task<X> GetFilterDocumentAsync<X>(string collectionName, FilterDefinition<X> filter) where X : new()
+        public async Task<X> GetFilterDocumentAsync<X>(string collectionName, FilterDefinition<X> filter)
         {
+            // here X => can be IMongoCollection or List<type> or (most probably)Single type
             try
             {
-                var collection = _mongoDatabase.GetCollection<X>(collectionName);
+                IMongoCollection<X> collection = _mongoDatabase.GetCollection<X>(collectionName);
+
                 return await collection.Find(filter).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
-                return new();
+                await ErrorLogger.WriteLog(ex);
+                throw;
             }
         }
     }
