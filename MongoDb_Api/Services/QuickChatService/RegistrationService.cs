@@ -45,7 +45,7 @@ namespace MongoDb_Api.Services.QuickChatService
             }
             else
             {
-                baseResponse.StatusMessage = "User not Found";
+                baseResponse.StatusMessage = "UserName or Password not Found";
                 baseResponse.StatusCode = 204;
             }
 

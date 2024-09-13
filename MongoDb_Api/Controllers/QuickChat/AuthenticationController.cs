@@ -11,7 +11,8 @@ namespace MongoDb_Api.Controllers.QuickChat
         private readonly IRegistrationService _registrationService = registrationService;
         [HttpPost]
         [ActionName("GetUserDetailsAsync")]
-        public async Task<ActionResult> GetUserDetails([FromBody] UserObject userObject) {
+        public async Task<ActionResult> GetUserDetails([FromBody] UserObject userObject)
+        {
             if (ModelState.IsValid)
             {
                 return Ok(await _registrationService.GetUserDetails(userObject));
