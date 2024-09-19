@@ -41,6 +41,41 @@ namespace MongoDb_Api.Models.QuickChatModels
         public string DeviceToken { get; set; } = "";
         [BsonElement("socialLinks")]
         public string SocialLinks { get; set; } = "";
+        [BsonElement("isOnline")]
+        public bool IsOnline { get; set; }
+        [BsonElement("friends")]
+        public List<string> Friends { get; set; } = new();
+        [BsonElement("blockList")]
+        public List<string> BlockList { get; set; } = new();
+        [BsonElement("role")]
+        public short Role { get; set; }
+        [BsonElement("lastMessage")]
+        public string LastMessage { get; set; } = "";
+        [BsonElement("messageCount")]
+        public long MessageCount { get; set; }
+        [BsonElement("typingStatus")]
+        public bool TypingStatus { get; set; }
+        [BsonElement("lastActiveRoom")]
+        public string LastActiveRoom { get; set; } = "";
+        [BsonElement("pushNotifications")]
+        public string PushNotifications { get; set; } = "";
+        [BsonElement("isTwoFactorEnabled")]
+        public bool IsTwoFactorEnabled { get; set; }
+        [BsonElement("preferences")]
+        public UserPreferences Preferences { get; set; } = new();
+        [BsonElement("socialConnections")]
+        public List<SocialLinks> SocialConnections { get; set; } = new();
+    }
+
+    public class UserPreferences {
+        public string Theme { get; set; } = "Light";
+        public bool Notifications { get; set; }
+    }
+
+    public class SocialLinks
+    {
+        public string Platform { get; set; } = "";
+        public string Link { get; set; } = "";
     }
 
     public class UserObject {
