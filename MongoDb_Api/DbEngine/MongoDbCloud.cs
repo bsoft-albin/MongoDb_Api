@@ -13,6 +13,7 @@ namespace MongoDb_Api.DbEngine
         Task<IMongoCollection<X>> GetAllDocumentsAsync<X>(string collectionName);
         Task<List<X>> GetAllDocumentsAsListAsync<X>(string collectionName);
         Task<X> GetFilterDocumentAsync<X>(string collectionName, FilterDefinition<X> filter);
+        Task<IMongoCollection<X>> GetRawDocumentsAsListAsync<X>(string collectionName);
     }
 
     public class MongoCloudEngine : IMongoCloudEngine
@@ -82,6 +83,20 @@ namespace MongoDb_Api.DbEngine
             {
                 IMongoCollection<X> mongoCollection = _mongoDatabase.GetCollection<X>(collectionName);
                 return await mongoCollection.Find(_ => true).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                await ErrorLogger.WriteLog(ex);
+                throw;
+            }
+
+        }
+
+        public async Task<IMongoCollection<X>> GetRawDocumentsAsListAsync<X>(string collectionName)
+        {
+            try
+            {
+                return _mongoDatabase.GetCollection<X>(collectionName);
             }
             catch (Exception ex)
             {

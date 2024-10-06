@@ -29,6 +29,9 @@ builder.Services.AddSingleton<IMongoCloudEngine, MongoCloudEngine>(sp => {
 builder.Services.AddScoped<IRegistrationRepo, RegistrationRepo>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 
+builder.Services.AddScoped<ICommonServices, CommonServices>();
+builder.Services.AddScoped<ICommonRepo, CommonRepo>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

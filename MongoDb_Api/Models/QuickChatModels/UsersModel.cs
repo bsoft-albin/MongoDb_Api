@@ -41,29 +41,29 @@ namespace MongoDb_Api.Models.QuickChatModels
         public string DeviceToken { get; set; } = "";
         [BsonElement("socialLinks")]
         public string SocialLinks { get; set; } = "";
-        [BsonElement("isOnline")]
+        [BsonElement("IsOnline")]
         public bool IsOnline { get; set; }
-        [BsonElement("friends")]
+        [BsonElement("Friends")]
         public List<string> Friends { get; set; } = new();
-        [BsonElement("blockList")]
+        [BsonElement("BlockList")]
         public List<string> BlockList { get; set; } = new();
-        [BsonElement("role")]
+        [BsonElement("Role")]
         public short Role { get; set; }
-        [BsonElement("lastMessage")]
+        [BsonElement("LastMessage")]
         public string LastMessage { get; set; } = "";
-        [BsonElement("messageCount")]
+        [BsonElement("MessageCount")]
         public long MessageCount { get; set; }
-        [BsonElement("typingStatus")]
+        [BsonElement("TypingStatus")]
         public bool TypingStatus { get; set; }
-        [BsonElement("lastActiveRoom")]
+        [BsonElement("LastActiveRoom")]
         public string LastActiveRoom { get; set; } = "";
-        [BsonElement("pushNotifications")]
+        [BsonElement("PushNotifications")]
         public string PushNotifications { get; set; } = "";
-        [BsonElement("isTwoFactorEnabled")]
+        [BsonElement("IsTwoFactorEnabled")]
         public bool IsTwoFactorEnabled { get; set; }
-        [BsonElement("preferences")]
+        [BsonElement("Preferences")]
         public UserPreferences Preferences { get; set; } = new();
-        [BsonElement("socialConnections")]
+        [BsonElement("SocialConnections")]
         public List<SocialLinks> SocialConnections { get; set; } = new();
     }
 

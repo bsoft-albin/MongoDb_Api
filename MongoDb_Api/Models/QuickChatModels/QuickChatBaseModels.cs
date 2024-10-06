@@ -4,6 +4,6 @@
     {
         public Object? Data { get; set; }
         public int StatusCode { get; set; } = 200;
-        public String StatusMessage { get; set; } = "";
+        public String StatusMessage { get; set; } = "Success";
     }
 }
