@@ -21,8 +21,7 @@ namespace MongoDb_Api.Controllers.QuickChat
             BaseResponse obj = new();
             try
             {
-                obj = await _commonServices.GetUserNamesAndEmailsAsync();
-
+                obj = await _commonServices.GetUserNamesAndEmailsAsync(getValue);
             }
             catch (Exception x)
             {

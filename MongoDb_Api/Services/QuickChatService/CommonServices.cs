@@ -6,7 +6,7 @@ namespace MongoDb_Api.Services.QuickChatService
 {
     public interface ICommonServices
     {
-        Task<BaseResponse> GetUserNamesAndEmailsAsync();
+        Task<BaseResponse> GetUserNamesAndEmailsAsync(string name);
     }
     public class CommonServices : ICommonServices
     {
@@ -16,10 +16,10 @@ namespace MongoDb_Api.Services.QuickChatService
             _commonRepo = commonRepo;
         }
 
-        public async Task<BaseResponse> GetUserNamesAndEmailsAsync()
+        public async Task<BaseResponse> GetUserNamesAndEmailsAsync(string name)
         {
             BaseResponse baseResponse = new();
-            List<BsonDocument> lists = await _commonRepo.GetUserNamesAndEmailsAsync();
+            List<UserSearch> lists = await _commonRepo.GetUserNamesAndEmailsAsync(name);
 
             if (lists != null && lists.Count > 0)
             {
@@ -27,7 +27,7 @@ namespace MongoDb_Api.Services.QuickChatService
                 baseResponse.StatusCode = 200;
             }
             else {
-                baseResponse.StatusCode = 200;
+                baseResponse.StatusCode = 204;
                 baseResponse.StatusMessage = "No record found";
             }
 

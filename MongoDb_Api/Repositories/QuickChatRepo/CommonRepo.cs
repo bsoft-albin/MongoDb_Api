@@ -9,7 +9,7 @@ namespace MongoDb_Api.Repositories.QuickChatRepo
 
     public interface ICommonRepo
     {
-        Task<List<BsonDocument>> GetUserNamesAndEmailsAsync();
+        Task<List<UserSearch>> GetUserNamesAndEmailsAsync(string inputText);
     }
 
     public class CommonRepo : ICommonRepo
@@ -21,30 +21,36 @@ namespace MongoDb_Api.Repositories.QuickChatRepo
         }
 
         // projection technique for getting only specific columns like in RDBMS.
-        public async Task<List<BsonDocument>> GetUserNamesAndEmailsAsync()
+        public async Task<List<UserSearch>> GetUserNamesAndEmailsAsync(string inputText)
         {
-            var result = new List<BsonDocument>();
+            List<UserSearch> list = [];
             try
             {
-                var _userProfiles = await _mongoCloud.GetRawDocumentsAsListAsync<UserProfile>("users");
-                // Define the projection to include only 'UserName' and 'Email'
-                ProjectionDefinition<UserProfile> projection = Builders<UserProfile>.Projection
-                                .Include(u => u.UserName)
-                                .Include(u => u.Email).Include(u => u._id);
-                // .Exclude(u => u._id);  // Optionally exclude the _id field
+                // Get the collection
+                var result = await _mongoCloud.GetRawDocumentsAsListAsync<UserSearch>("users");
 
-                // Query the collection and apply the projection
-                result = await _userProfiles.Find(new BsonDocument())
-                                    .Project(projection)
-                                    .ToListAsync();
+                // Create a filter to match documents where the 'username' field contains the input text
+                var filter = Builders<UserSearch>.Filter.Or(
+                    Builders<UserSearch>.Filter.Regex("username", new BsonRegularExpression(inputText, "i")),
+                    Builders<UserSearch>.Filter.Regex("name", new BsonRegularExpression(inputText, "i"))
+                );
+
+                var projection = Builders<UserSearch>.Projection
+                                                     .Include(u => u.UserName)
+                                                     .Include(u => u.Email)
+                                                     .Include(u => u.Id).Include(u => u.Name);
+
+                // Fetch documents that match the filter and apply the projection
+                list = await result.Find(filter)
+                                            .Project<UserSearch>(projection)  // Project fields onto the UserSearch DTO
+                                            .ToListAsync();
             }
             catch (Exception x)
             {
                 await ErrorLogger.WriteLog(x);
             }
 
-
-            return result;
+            return list;
         }
     }
 }

@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MongoDb_Api.Models.QuickChatModels
 {
-    public class UserProfile {
+    public class UserProfile
+    {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId _id { get; set; }
@@ -41,33 +42,34 @@ namespace MongoDb_Api.Models.QuickChatModels
         public string DeviceToken { get; set; } = "";
         [BsonElement("socialLinks")]
         public string SocialLinks { get; set; } = "";
-        [BsonElement("IsOnline")]
+        [BsonElement("isOnline")]
         public bool IsOnline { get; set; }
-        [BsonElement("Friends")]
+        [BsonElement("friends")]
         public List<string> Friends { get; set; } = new();
-        [BsonElement("BlockList")]
+        [BsonElement("blockList")]
         public List<string> BlockList { get; set; } = new();
-        [BsonElement("Role")]
+        [BsonElement("role")]
         public short Role { get; set; }
-        [BsonElement("LastMessage")]
+        [BsonElement("lastMessage")]
         public string LastMessage { get; set; } = "";
-        [BsonElement("MessageCount")]
+        [BsonElement("messageCount")]
         public long MessageCount { get; set; }
-        [BsonElement("TypingStatus")]
+        [BsonElement("typingStatus")]
         public bool TypingStatus { get; set; }
-        [BsonElement("LastActiveRoom")]
+        [BsonElement("lastActiveRoom")]
         public string LastActiveRoom { get; set; } = "";
-        [BsonElement("PushNotifications")]
+        [BsonElement("pushNotifications")]
         public string PushNotifications { get; set; } = "";
-        [BsonElement("IsTwoFactorEnabled")]
+        [BsonElement("isTwoFactorEnabled")]
         public bool IsTwoFactorEnabled { get; set; }
-        [BsonElement("Preferences")]
+        [BsonElement("preferences")]
         public UserPreferences Preferences { get; set; } = new();
-        [BsonElement("SocialConnections")]
+        [BsonElement("socialConnections")]
         public List<SocialLinks> SocialConnections { get; set; } = new();
     }
 
-    public class UserPreferences {
+    public class UserPreferences
+    {
         public string Theme { get; set; } = "Light";
         public bool Notifications { get; set; }
     }
@@ -78,12 +80,25 @@ namespace MongoDb_Api.Models.QuickChatModels
         public string Link { get; set; } = "";
     }
 
-    public class UserObject {
+    public class UserObject
+    {
         [Required]
         [MaxLength(50)]
         public string UserName { get; set; } = "";
         [Required]
         [MaxLength(50)]
         public string Password { get; set; } = "";
+    }
+    public class UserSearch
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; } = "";
+        [BsonElement("username")]
+        public string UserName { get; set; } = "";
+        [BsonElement("name")]
+        public string Name { get; set; } = "";
+        [BsonElement("email")]
+        public string Email { get; set; } = "";
     }
 }
