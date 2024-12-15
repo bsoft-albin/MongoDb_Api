@@ -18,17 +18,7 @@ namespace MongoDb_Api.Controllers.QuickChat
         [ActionName("SearchQuickChatUsersAsync")]
         public async Task<ActionResult> SearchQuickChatUsers([FromQuery] string getValue)
         {
-            BaseResponse obj = new();
-            try
-            {
-                obj = await _commonServices.GetUserNamesAndEmailsAsync(getValue);
-            }
-            catch (Exception x)
-            {
-
-                throw;
-            }
-            return Ok(obj);
+            return Ok(await _commonServices.GetUserNamesAndEmailsAsync(getValue));
         }
     }
 }
